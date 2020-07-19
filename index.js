@@ -58,6 +58,7 @@ app.delete("/api/user", (req, res) => {
 });
 
 // add PUT request so that user can update their password
+
 function validate(user) {
     const schema = yup.object().shape({
         username: yup.string().min(3).max(30).required(),

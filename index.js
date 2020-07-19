@@ -13,7 +13,6 @@ app.get("/", (req, res) => {
 });
 
 app.post("/api/user/add", (req, res) => {
-
     const data = [req.body.username, req.body.password]
     const sql = "INSERT INTO user (username, password) VALUES (?, ?)";
     db.run(sql, data, function (err) {
@@ -25,8 +24,9 @@ app.post("/api/user/add", (req, res) => {
 });
 
 // inside heroes app or user account app (where user can change password) or delete account
+// client side should make user enter password to confirm deletion
 app.delete("/api/user/remove", (req, res) => {
-    //
+
 });
 
 app.listen(port, () => console.log(`listening on port ${port}`));

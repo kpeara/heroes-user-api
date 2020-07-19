@@ -12,8 +12,8 @@ app.get("/", (req, res) => {
     res.send("<h1>Heroes User API</h1>");
 });
 
-// gets id of user
-app.get("/api/user/id", (req, res) => {
+// gets unique id of user
+app.get("/api/user", (req, res) => {
     const data = [req.body.username, req.body.password];
     const sql = "SELECT id FROM user WHERE username = ? AND password = ?";
     db.get(sql, data, (err, row) => {
@@ -26,7 +26,7 @@ app.get("/api/user/id", (req, res) => {
 })
 
 // register a user
-app.post("/api/user/add", (req, res) => {
+app.post("/api/user", (req, res) => {
     validate(req.body)
         .then(() => {
             const data = [req.body.username, req.body.password]
@@ -47,7 +47,7 @@ app.post("/api/user/add", (req, res) => {
 // client side should make user enter password to confirm deletion
 // remove based on id
 // user won't be able to delete based on wrong id because id must first gotten from GET
-app.delete("/api/user/remove", (req, res) => {
+app.delete("/api/user", (req, res) => {
     const sql = `DELETE FROM user where id = ${req.body.id}`;
     db.run(sql, function (err) {
         if (err) console.log(err.message);

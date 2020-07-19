@@ -19,7 +19,7 @@ app.get("/api/user/id", (req, res) => {
     db.get(sql, data, (err, row) => {
         if (err) console.log(err.message);
         else {
-            if (!row) res.status(404).sendStatus("User Id does not exist");
+            if (!row) res.status(400).send("User Id does not exist");
             else res.send(row);
         }
     });
@@ -27,19 +27,26 @@ app.get("/api/user/id", (req, res) => {
 
 // register a user
 app.post("/api/user/add", (req, res) => {
-    const data = [req.body.username, req.body.password]
-    const sql = "INSERT INTO user (username, password) VALUES (?, ?)";
-    db.run(sql, data, function (err) {
-        if (err) console.log(err.message);
-        else {
-            res.send("User registered.");
-        }
-    })
+    validate(req.body)
+        .then(() => {
+            const data = [req.body.username, req.body.password]
+            const sql = "INSERT INTO user (username, password) VALUES (?, ?)";
+            db.run(sql, data, function (err) {
+                if (err) console.log(err.message);
+                else {
+                    res.send("User registered.");
+                }
+            })
+        })
+        .catch(err => {
+            if (err) res.status(400).send(err.errors[0]);
+        });
 });
 
 // inside heroes app or user account app (where user can change password) or delete account
 // client side should make user enter password to confirm deletion
 // remove based on id
+// user won't be able to delete based on wrong id because id must first gotten from GET
 app.delete("/api/user/remove", (req, res) => {
     const sql = `DELETE FROM user where id = ${req.body.id}`;
     db.run(sql, function (err) {
@@ -49,5 +56,14 @@ app.delete("/api/user/remove", (req, res) => {
         }
     })
 });
+
+// add PUT request so that user can update their password
+function validate(user) {
+    const schema = yup.object().shape({
+        username: yup.string().min(3).max(30).required(),
+        password: yup.string().required() // TODO: ADD LENGTH OF HASH LATER
+    });
+    return schema.validate(user);
+}
 
 app.listen(port, () => console.log(`listening on port ${port}`));

@@ -61,7 +61,7 @@ app.delete("/api/user", (req, res) => {
 
 function validate(user) {
     const schema = yup.object().shape({
-        username: yup.string().min(3).max(30).required(),
+        username: yup.string().min(3).max(15).required(),
         password: yup.string().required() // TODO: ADD LENGTH OF HASH LATER
     });
     return schema.validate(user);

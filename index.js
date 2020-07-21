@@ -32,7 +32,10 @@ app.post("/api/user", (req, res) => {
             const data = [req.body.username, req.body.password]
             const sql = "INSERT INTO user (username, password) VALUES (?, ?)";
             db.run(sql, data, function (err) {
-                if (err) console.log(err.message);
+                if (err) {
+                    console.log(err.message);
+                    res.status(400).send(err.message);
+                }
                 else {
                     res.send("User registered.");
                 }

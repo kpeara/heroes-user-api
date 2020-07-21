@@ -17,7 +17,10 @@ app.get("/api/user", (req, res) => {
     const data = [req.body.username, req.body.password];
     const sql = "SELECT id FROM user WHERE username = ? AND password = ?";
     db.get(sql, data, (err, row) => {
-        if (err) console.log(err.message);
+        if (err) {
+            console.log(err.message);
+            res.status(400).send(err.message);
+        }
         else {
             if (!row) res.status(400).send("User Id does not exist");
             else res.send(row);
@@ -53,7 +56,10 @@ app.post("/api/user", (req, res) => {
 app.delete("/api/user", (req, res) => {
     const sql = `DELETE FROM user where id = ${req.body.id}`;
     db.run(sql, function (err) {
-        if (err) console.log(err.message);
+        if (err) {
+            console.log(err.message);
+            res.status(400).send(err.message);
+        }
         else {
             res.send("User deleted.");
         }

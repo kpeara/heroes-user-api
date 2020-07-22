@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
 });
 
 // Logging in a user, returns their id (used by Heroes Login App)
-app.get("/api/user", (req, res) => {
+app.get("/api/user/login", (req, res) => {
 
     // redo method
     // get users password hash by username
@@ -71,7 +71,7 @@ app.get("/api/user", (req, res) => {
 })
 
 // register a user (used by Heroes Register App)
-app.post("/api/user", (req, res) => {
+app.post("/api/user/register", (req, res) => {
     validate(req.body)
         .then(() => {
             // hash password

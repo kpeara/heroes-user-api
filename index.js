@@ -16,13 +16,6 @@ app.get("/", (req, res) => {
 
 // Logging in a user, returns their id (used by Heroes Login App)
 app.get("/api/user/login", (req, res) => {
-
-    // redo method
-    // get users password hash by username
-    // compare the password hash to req.body.password
-    // if true, user authenticated
-    // else throw error
-
     const dataFindUser = [req.body.username];
     const sqlFindUser = "SELECT password FROM user WHERE username = ?";
     db.get(sqlFindUser, dataFindUser, (err, hashedPassword) => {
@@ -55,19 +48,6 @@ app.get("/api/user/login", (req, res) => {
             })
         }
     });
-
-    // const data = [req.body.username, req.body.password];
-    // const sql = "SELECT id FROM user WHERE username = ? AND password = ?";
-    // db.get(sql, data, (err, row) => {
-    //     if (err) {
-    //         console.log(err.message);
-    //         res.status(400).send(err.message);
-    //     }
-    //     else {
-    //         if (!row) res.status(400).send("User Id does not exist");
-    //         else res.status(200).send(row);
-    //     }
-    // });
 })
 
 // register a user (used by Heroes Register App)

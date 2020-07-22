@@ -9,7 +9,7 @@ app.use(cors({ credentials: true, origin: true }));
 const port = 3002;
 
 app.get("/", (req, res) => {
-    res.send("<h1>Heroes User API</h1>");
+    res.status(200).send("<h1>Heroes User API</h1>");
 });
 
 // gets unique id of user
@@ -23,7 +23,7 @@ app.get("/api/user", (req, res) => {
         }
         else {
             if (!row) res.status(400).send("User Id does not exist");
-            else res.send(row);
+            else res.status(200).send(row);
         }
     });
 })
@@ -40,7 +40,7 @@ app.post("/api/user", (req, res) => {
                     res.status(400).send(err.message);
                 }
                 else {
-                    res.send("User registered.");
+                    res.status(201).send("User registered.");
                 }
             })
         })
@@ -61,7 +61,7 @@ app.delete("/api/user", (req, res) => {
             res.status(400).send(err.message);
         }
         else {
-            res.send("User deleted.");
+            res.status(200).send("User deleted.");
         }
     })
 });

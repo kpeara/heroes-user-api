@@ -14,23 +14,63 @@ app.get("/", (req, res) => {
     res.status(200).send("<h1>Heroes User API</h1>");
 });
 
-// gets unique id of user
+// Logging in a user, returns their id (used by Heroes Login App)
 app.get("/api/user", (req, res) => {
-    const data = [req.body.username, req.body.password];
-    const sql = "SELECT id FROM user WHERE username = ? AND password = ?";
-    db.get(sql, data, (err, row) => {
+
+    // redo method
+    // get users password hash by username
+    // compare the password hash to req.body.password
+    // if true, user authenticated
+    // else throw error
+
+    const dataFindUser = [req.body.username];
+    const sqlFindUser = "SELECT password FROM user WHERE username = ?";
+    db.get(sqlFindUser, dataFindUser, (err, hashedPassword) => {
         if (err) {
             console.log(err.message);
             res.status(400).send(err.message);
         }
         else {
-            if (!row) res.status(400).send("User Id does not exist");
-            else res.status(200).send(row);
+            // compare hash to passsword
+            bcrypt.compare(req.body.password, hashedPassword).then(result => {
+                if (result) {
+                    console.log("User Authenticated");
+                    const data = [req.body.username, hashedPassword];
+                    const sql = "SELECT id FROM user WHERE username = ? AND password = ?";
+                    db.get(sql, data, (err, row) => {
+                        if (err) {
+                            console.log(err.message);
+                            res.status(400).send(err.message);
+                        }
+                        else {
+                            if (!row) res.status(400).send("User Id does not exist");
+                            else res.status(200).send(row);
+                        }
+                    });
+                }
+                else {
+                    console.log("Invalid Password");
+                    res.status(400).send("Invalid Password");
+                }
+            })
         }
     });
+
+    // const data = [req.body.username, req.body.password];
+    // const sql = "SELECT id FROM user WHERE username = ? AND password = ?";
+    // db.get(sql, data, (err, row) => {
+    //     if (err) {
+    //         console.log(err.message);
+    //         res.status(400).send(err.message);
+    //     }
+    //     else {
+    //         if (!row) res.status(400).send("User Id does not exist");
+    //         else res.status(200).send(row);
+    //     }
+    // });
 })
 
-// register a user
+// register a user (used by Heroes Register App)
 app.post("/api/user", (req, res) => {
     validate(req.body)
         .then(() => {

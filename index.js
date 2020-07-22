@@ -1,12 +1,14 @@
 const express = require("express");
-const yup = require("yup"); // for validation later
+const yup = require("yup");
 const cors = require("cors");
 const db = require("./dbconnect");
+const bcrypt = require("bcrypt");
 
 const app = express();
 app.use(express.json());
 app.use(cors({ credentials: true, origin: true }));
 const port = 3002;
+const saltRounds = 10;
 
 app.get("/", (req, res) => {
     res.status(200).send("<h1>Heroes User API</h1>");
@@ -32,17 +34,26 @@ app.get("/api/user", (req, res) => {
 app.post("/api/user", (req, res) => {
     validate(req.body)
         .then(() => {
-            const data = [req.body.username, req.body.password]
-            const sql = "INSERT INTO user (username, password) VALUES (?, ?)";
-            db.run(sql, data, function (err) {
+            // hash password
+            bcrypt.hash(req.body.password, saltRounds, function (err, hashedPassword) {
                 if (err) {
                     console.log(err.message);
-                    res.status(400).send(err.message);
+                    res.status(404).send(err.message);
                 }
                 else {
-                    res.status(201).send("User registered.");
+                    const data = [req.body.username, hashedPassword]
+                    const sql = "INSERT INTO user (username, password) VALUES (?, ?)";
+                    db.run(sql, data, function (err) {
+                        if (err) {
+                            console.log(err.message);
+                            res.status(400).send(err.message);
+                        }
+                        else {
+                            res.status(201).send("User registered.");
+                        }
+                    });
                 }
-            })
+            });
         })
         .catch(err => {
             if (err) res.status(400).send(err.errors[0]);

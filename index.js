@@ -15,16 +15,17 @@ app.get("/", (req, res) => {
 });
 
 // Logging in a user, returns their id (used by Heroes Login App)
-app.get("/api/user/login", (req, res) => {
+app.post("/api/user/login", (req, res) => {
     const dataFindUser = [req.body.username];
     const sqlFindUser = "SELECT password FROM user WHERE username = ?";
-    db.get(sqlFindUser, dataFindUser, (err, hashedPassword) => {
+    db.get(sqlFindUser, dataFindUser, (err, row) => {
         if (err) {
             console.log(err.message);
             res.status(400).send(err.message);
         }
         else {
             // compare hash to passsword
+            const hashedPassword = row.password;
             bcrypt.compare(req.body.password, hashedPassword).then(result => {
                 if (result) {
                     console.log("User Authenticated");
@@ -45,7 +46,10 @@ app.get("/api/user/login", (req, res) => {
                     console.log("Invalid Password");
                     res.status(400).send("Invalid Password");
                 }
-            })
+            }).catch(err => {
+                console.log(err.message);
+                res.status(400).send("Malformed Input");
+            });
         }
     });
 })

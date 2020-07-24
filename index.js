@@ -1,3 +1,4 @@
+require("dotenv").config({ path: "../.env" });
 const express = require("express");
 const yup = require("yup");
 const cors = require("cors");
@@ -42,7 +43,7 @@ app.post("/api/user/login", (req, res) => {
                             if (!row) res.status(400).send("User Id does not exist");
                             else {
                                 // found user id
-                                const accessToken = jwt.sign(row, "TEST");
+                                const accessToken = jwt.sign(row, process.env.ACCESS_TOKEN);
                                 res.status(200).send({ accessToken: accessToken });
                             }
                         }

@@ -2,7 +2,7 @@ require("dotenv").config({ path: "../.env" });
 const express = require("express");
 const yup = require("yup");
 const cors = require("cors");
-const db = require("./dbconnect");
+const db = require("../heroes-db/dbconnect");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 

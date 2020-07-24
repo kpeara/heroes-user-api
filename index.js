@@ -3,6 +3,7 @@ const yup = require("yup");
 const cors = require("cors");
 const db = require("./dbconnect");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const app = express();
 app.use(express.json());
@@ -39,7 +40,11 @@ app.post("/api/user/login", (req, res) => {
                         }
                         else {
                             if (!row) res.status(400).send("User Id does not exist");
-                            else res.status(200).send(row);
+                            else {
+                                // found user id
+                                const accessToken = jwt.sign(row, "TEST");
+                                res.status(200).send({ accessToken: accessToken });
+                            }
                         }
                     });
                 }

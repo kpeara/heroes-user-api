@@ -29,6 +29,7 @@ app.post("/api/user/login", (req, res) => {
             bcrypt.compare(req.body.password, hashedPassword).then(result => {
                 if (result) {
                     console.log("User Authenticated");
+                    // might change query
                     const data = [req.body.username, hashedPassword];
                     const sql = "SELECT id FROM user WHERE username = ? AND password = ?";
                     db.get(sql, data, (err, row) => {

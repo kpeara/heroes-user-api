@@ -43,7 +43,7 @@ app.post("/api/user/login", (req, res) => {
                             if (!row) res.status(400).send("User Id does not exist");
                             else {
                                 // found user id
-                                const accessToken = jwt.sign(row, process.env.ACCESS_TOKEN);
+                                const accessToken = jwt.sign(row, process.env.ACCESS_TOKEN, { expiresIn: "360s" });
                                 res.status(200).send({ accessToken: accessToken });
                             }
                         }

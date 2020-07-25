@@ -2,6 +2,7 @@ require("dotenv").config({ path: "../.env" });
 const express = require("express");
 const yup = require("yup");
 const cors = require("cors");
+const path = require("path");
 const db = require("../heroes-db/dbconnect");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -13,7 +14,7 @@ const port = 3002;
 const saltRounds = 10;
 
 app.get("/", (req, res) => {
-    res.status(200).send("<h1>Heroes User API</h1>");
+    res.status(200).sendFile(path.join(__dirname + "/index.html"));
 });
 
 // Logging in a user, returns their id (used by Heroes Login App)
